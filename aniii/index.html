@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Alguien Muy Especial 💜</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Dancing Script & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0d0714;
+            color: #f3e8ff;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .font-romantic {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(30, 19, 48, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(216, 180, 254, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(19, 7, 34, 0.37);
+        }
+
+        .glass-modal {
+            background: rgba(22, 12, 36, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(192, 132, 252, 0.3);
+        }
+
+        /* Gradient Glow Effects */
+        .glow-lavender {
+            box-shadow: 0 0 25px rgba(192, 132, 252, 0.4);
+        }
+        
+        .glow-lavender-lg {
+            box-shadow: 0 0 45px rgba(168, 85, 247, 0.5);
+        }
+
+        /* Custom Animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .animate-pulse-glow {
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        /* Envelope CSS Animation */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background-color: #3b1d5a;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid #4c2675;
+            border-right: 140px solid #4c2675;
+            border-bottom: 100px solid #582d8b;
+            border-top: 80px solid transparent;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 3;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 100px solid #6b35a8;
+            transform-origin: top;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s;
+            z-index: 4;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .letter-preview {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            right: 15px;
+            height: 150px;
+            background: #faf5ff;
+            border-radius: 8px;
+            padding: 15px;
+            color: #3b0764;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 2;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .envelope.open .letter-preview {
+            transform: translateY(-80px);
+        }
+
+        /* Flower Bloom Animations */
+        .flower-icon {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .flower-card:hover .flower-icon {
+            transform: scale(1.25) rotate(12deg);
+            filter: drop-shadow(0 0 12px rgba(216, 180, 254, 0.8));
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0714;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #582d8b;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+    <!-- Canvas para efecto Fondo Estrellado / Destellos -->
+    <canvas id="starCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Canvas para Partículas de Amor (Corazones y Flores) -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-40"></canvas>
+
+    <!-- Reproductor / Botón de Música Sutil -->
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <button id="musicToggle" class="glass-card w-11 h-11 rounded-full flex items-center justify-center text-purple-300 hover:text-white hover:scale-105 active:scale-95 transition-all duration-300 border border-purple-500/30">
+            <i id="musicIcon" class="fas fa-music text-sm"></i>
+        </button>
+    </div>
+
+    <!-- ================= 1. PANTALLA DE BIENVENIDA / PORTADA ================= -->
+    <section id="welcomeScreen" class="fixed inset-0 z-30 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-1000 bg-[#0d0714]/90 backdrop-blur-md">
+        <div class="max-w-md w-full flex flex-col items-center space-y-8 animate-float">
+            <!-- Icono Decorativo -->
+            <div class="relative">
+                <div class="absolute inset-0 bg-purple-600/30 blur-2xl rounded-full"></div>
+                <div class="relative w-24 h-24 rounded-full glass-card flex items-center justify-center border border-purple-400/40 text-purple-300 text-4xl">
+                    <i class="fas fa-heart animate-pulse"></i>
+                </div>
+            </div>
+
+            <!-- Título Principal -->
+            <div class="space-y-3">
+                <span class="text-xs uppercase tracking-widest text-purple-300/80 font-semibold">Una pequeña sorpresa</span>
+                <h1 class="text-4xl sm:text-5xl font-bold font-romantic text-transparent bg-clip-text bg-gradient-to-r from-purple-200 via-pink-300 to-purple-400 leading-tight">
+                    Para alguien muy especial 💜
+                </h1>
+                <p class="text-sm text-purple-200/70 font-light max-w-xs mx-auto">
+                    Preparé este rincón interactivo pensado especialmente en ti.
+                </p>
+            </div>
+
+            <!-- Botón Entrar -->
+            <button id="enterBtn" class="group relative px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-500 text-white font-medium shadow-lg glow-lavender hover:glow-lavender-lg transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 overflow-hidden">
+                <span class="relative z-10 flex items-center gap-2 text-sm tracking-wide">
+                    Toca para abrir <i class="fas fa-sparkles text-xs group-hover:rotate-12 transition-transform"></i>
+                </span>
+                <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+            </button>
+        </div>
+    </section>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <main id="mainContent" class="relative z-10 opacity-0 transition-opacity duration-1000 max-w-lg mx-auto px-4 py-8 pb-24 flex flex-col space-y-12">
+        
+        <!-- Header Principal -->
+        <header class="text-center space-y-2 pt-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-card text-xs text-purple-300 border border-purple-500/20 mb-2">
+                <i class="fas fa-moon text-purple-400"></i> Tu espacio especial
+            </div>
+            <h2 class="text-3xl font-bold font-romantic text-purple-100">Hola, bonita ✨</h2>
+            <p class="text-xs text-purple-300/70 max-w-xs mx-auto">
+                Explora cada detalle creado para sacarte una sonrisa hoy.
+            </p>
+        </header>
+
+        <!-- ================= 2. JARDÍN INTERACTIVO DE FLORES ================= -->
+        <section class="space-y-4">
+            <div class="flex items-center justify-between px-1">
+                <h3 class="text-lg font-semibold text-purple-200 flex items-center gap-2">
+                    <i class="fas fa-spa text-purple-400 text-sm"></i> Jardín de Detalle
+                </h3>
+                <span class="text-xs text-purple-400/80">Toca cada flor</span>
+            </div>
+
+            <!-- Grid de Flores (Tarjetas) -->
+            <div class="grid grid-cols-2 gap-3">
+                
+                <!-- Flor 1 -->
+                <div onclick="openFlowerModal(0)" class="flower-card glass-card p-4 rounded-2xl border border-purple-500/20 flex flex-col items-center text-center cursor-pointer hover:border-purple-400/50 transition-all">
+                    <div class="w-12 h-12 rounded-full bg-purple-900/40 flex items-center justify-center text-purple-300 mb-2 text-xl flower-icon">
+                        🌸
+                    </div>
+                    <h4 class="text-xs font-semibold text-purple-100 mb-1">Tu Sonrisa</h4>
+                    <p class="text-[10px] text-purple-300/60">Toca para descubrir...</p>
+                </div>
+
+                <!-- Flor 2 -->
+                <div onclick="openFlowerModal(1)" class="flower-card glass-card p-4 rounded-2xl border border-purple-500/20 flex flex-col items-center text-center cursor-pointer hover:border-purple-400/50 transition-all">
+                    <div class="w-12 h-12 rounded-full bg-purple-900/40 flex items-center justify-center text-purple-300 mb-2 text-xl flower-icon">
+                        🌷
+                    </div>
+                    <h4 class="text-xs font-semibold text-purple-100 mb-1">Tu Presencia</h4>
+                    <p class="text-[10px] text-purple-300/60">Toca para descubrir...</p>
+                </div>
+
+                <!-- Flor 3 -->
+                <div onclick="openFlowerModal(2)" class="flower-card glass-card p-4 rounded-2xl border border-purple-500/20 flex flex-col items-center text-center cursor-pointer hover:border-purple-400/50 transition-all">
+                    <div class="w-12 h-12 rounded-full bg-purple-900/40 flex items-center justify-center text-purple-300 mb-2 text-xl flower-icon">
+                        🪻
+                    </div>
+                    <h4 class="text-xs font-semibold text-purple-100 mb-1">Lo Especial</h4>
+                    <p class="text-[10px] text-purple-300/60">Toca para descubrir...</p>
+                </div>
+
+                <!-- Flor 4 -->
+                <div onclick="openFlowerModal(3)" class="flower-card glass-card p-4 rounded-2xl border border-purple-500/20 flex flex-col items-center text-center cursor-pointer hover:border-purple-400/50 transition-all">
+                    <div class="w-12 h-12 rounded-full bg-purple-900/40 flex items-center justify-center text-purple-300 mb-2 text-xl flower-icon">
+                        ✨
+                    </div>
+                    <h4 class="text-xs font-semibold text-purple-100 mb-1">Un Deseo</h4>
+                    <p class="text-[10px] text-purple-300/60">Toca para descubrir...</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= 3. CARTA ROMÁNTICA INTERACTIVA ================= -->
+        <section class="space-y-4 flex flex-col items-center">
+            <div class="w-full text-left px-1">
+                <h3 class="text-lg font-semibold text-purple-200 flex items-center gap-2">
+                    <i class="fas fa-envelope-open-text text-purple-400 text-sm"></i> Una nota para ti
+                </h3>
+            </div>
+
+            <!-- Contenedor del Sobre -->
+            <div class="envelope-wrapper py-6">
+                <div id="envelope" class="envelope flex items-center justify-center" onclick="toggleLetterModal()">
+                    <div class="envelope-flap"></div>
+                    <div class="letter-preview flex flex-col justify-center items-center text-center p-2">
+                        <i class="fas fa-heart text-purple-500 mb-1 text-xs"></i>
+                        <span class="font-romantic text-base font-bold text-purple-900">Carta Especial</span>
+                        <span class="text-[9px] text-purple-700/70">Haz clic para leer completa</span>
+                    </div>
+                    <div class="absolute z-10 text-white/90 text-center pointer-events-none">
+                        <i class="fas fa-lock text-purple-300/80 mb-1 text-sm"></i>
+                        <p class="text-[11px] tracking-wide font-medium">Toca para abrir</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= 4. BOTÓN DE AMOR INFINITO & CONTADOR ================= -->
+        <section class="glass-card p-6 rounded-3xl border border-purple-500/20 text-center space-y-5 relative overflow-hidden">
+            <div class="absolute -right-8 -top-8 w-24 h-24 bg-pink-500/10 rounded-full blur-xl pointer-events-none"></div>
+            
+            <h3 class="text-base font-semibold text-purple-100">Contador de Cariño 💜</h3>
+            
+            <div class="flex flex-col items-center justify-center gap-1">
+                <div id="loveCounter" class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">
+                    0
+                </div>
+                <span class="text-[11px] text-purple-300/70 uppercase tracking-wider">Demostraciones de afecto</span>
+            </div>
+
+            <button id="loveBtn" class="relative group mx-auto px-6 py-3.5 rounded-full bg-gradient-to-r from-purple-600 to-pink-500 text-white font-medium shadow-md active:scale-95 transition-transform duration-150 flex items-center gap-2 justify-center w-full max-w-xs">
+                <i class="fas fa-heart text-pink-200 group-hover:scale-125 transition-transform"></i>
+                <span class="text-sm">¡Enviarte un abrazo!</span>
+            </button>
+            
+            <p class="text-[11px] text-purple-300/50 italic">Toca el botón varias veces para llenar la pantalla de magia</p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center py-4 text-[11px] text-purple-400/50">
+            Hecho con mucho cariño para ti ✨
+        </footer>
+    </main>
+
+    <!-- ================= MODALES / POPUPS ================= -->
+    
+    <!-- Modal para las Flores -->
+    <div id="flowerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-sm">
+        <div class="glass-modal max-w-xs w-full p-6 rounded-3xl text-center space-y-4 border border-purple-400/30 transform scale-90 transition-transform duration-300" id="flowerModalContent">
+            <div id="modalEmoji" class="text-4xl animate-bounce">🌸</div>
+            <h3 id="modalTitle" class="text-xl font-bold font-romantic text-purple-200"></h3>
+            <p id="modalText" class="text-xs text-purple-200/80 leading-relaxed font-light"></p>
+            <button onclick="closeFlowerModal()" class="w-full py-2.5 rounded-xl bg-purple-600/50 hover:bg-purple-600/70 text-purple-100 text-xs font-medium border border-purple-400/30 transition-colors">
+                Cerrar ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para la Carta Romántica Completa -->
+    <div id="letterModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-md">
+        <div class="glass-modal max-w-md w-full p-6 sm:p-8 rounded-3xl space-y-5 border border-purple-400/30 relative max-h-[85vh] overflow-y-auto" id="letterModalContent">
+            <button onclick="toggleLetterModal()" class="absolute top-4 right-4 text-purple-300 hover:text-white w-8 h-8 rounded-full bg-purple-950/50 flex items-center justify-center">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+
+            <div class="text-center space-y-1">
+                <i class="fas fa-heart text-pink-400 text-xl mb-1"></i>
+                <h3 class="text-2xl font-bold font-romantic text-purple-100">Para Ti, Especial</h3>
+                <p class="text-[10px] text-purple-300/60 uppercase tracking-widest">Leelo con calma</p>
+            </div>
+
+            <div class="space-y-3 text-xs sm:text-sm text-purple-100/90 leading-relaxed font-light border-t border-b border-purple-500/20 py-4">
+                <p>
+                    Quería crear algo diferente para decirte lo mucho que aprecio cada momento, conversación o sonrisa compartida contigo.
+                </p>
+                <p>
+                    A veces las palabras cotidianas se quedan cortas, pero quería recordarte lo increíble que eres. Tienes una luz propia que ilumina de forma muy bonita cualquier día gris.
+                </p>
+                <p>
+                    Gracias por ser tan tú, por tu autenticidad y por la linda energía que transmites. Espero que este pequeño detalle te saque una gran sonrisa.
+                </p>
+            </div>
+
+            <div class="text-right">
+                <span class="font-romantic text-lg text-pink-300 block">Con mucho cariño,</span>
+                <span class="text-[11px] text-purple-300/70">Alguien que te piensa mucho 💜</span>
+            </div>
+
+            <button onclick="toggleLetterModal()" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-medium shadow-md">
+                Guardar en el corazón ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+    <script>
+        /* ================= 1. DATOS DE LAS FLORES / MENSAJES ================= */
+        const flowerDetails = [
+            {
+                emoji: "🌸",
+                title: "Tu Sonrisa",
+                text: "Tienes una sonrisa capaz de iluminar el día de cualquiera. Cada vez que sonríes, todo a tu alrededor parece volverse un poco más bonito y ligero."
+            },
+            {
+                emoji: "🌷",
+                title: "Tu Presencia",
+                text: "Estar cerca de ti o hablar contigo transmite una paz maravillosa. Tienes un encanto natural que hace que cualquier momento sea especial."
+            },
+            {
+                emoji: "🪻",
+                title: "Lo Especial en Ti",
+                text: "Tu amabilidad, tu forma de ver la vida y la dulzura de tus detalles hacen de ti una persona completamente única e inolvidable."
+            },
+            {
+                emoji: "✨",
+                title: "Un Deseo",
+                text: "Deseo sinceramente verte feliz siempre, cumpliendo cada uno de tus sueños. Te mereces todo lo mejor que la vida pueda ofrecerte."
+            }
+        ];
+
+        /* ================= 2. TRANSICIÓN DE BIENVENIDA ================= */
+        const enterBtn = document.getElementById('enterBtn');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const mainContent = document.getElementById('mainContent');
+
+        enterBtn.addEventListener('click', () => {
+            welcomeScreen.classList.add('opacity-0');
+            setTimeout(() => {
+                welcomeScreen.style.display = 'none';
+                mainContent.classList.remove('opacity-0');
+                // Intentar iniciar audio suave
+                initAudio();
+            }, 1000);
+        });
+
+        /* ================= 3. LÓGICA DE MODALES DE FLORES ================= */
+        const flowerModal = document.getElementById('flowerModal');
+        const flowerModalContent = document.getElementById('flowerModalContent');
+
+        function openFlowerModal(index) {
+            const data = flowerDetails[index];
+            document.getElementById('modalEmoji').innerText = data.emoji;
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalText').innerText = data.text;
+
+            flowerModal.classList.remove('opacity-0', 'pointer-events-none');
+            flowerModalContent.classList.remove('scale-90');
+            flowerModalContent.classList.add('scale-100');
+        }
+
+        function closeFlowerModal() {
+            flowerModal.classList.add('opacity-0', 'pointer-events-none');
+            flowerModalContent.classList.remove('scale-100');
+            flowerModalContent.classList.add('scale-90');
+        }
+
+        /* ================= 4. CARTA / SOBRE ROMÁNTICO ================= */
+        const letterModal = document.getElementById('letterModal');
+        const letterModalContent = document.getElementById('letterModalContent');
+        const envelope = document.getElementById('envelope');
+
+        function toggleLetterModal() {
+            envelope.classList.toggle('open');
+            
+            setTimeout(() => {
+                if (letterModal.classList.contains('opacity-0')) {
+                    letterModal.classList.remove('opacity-0', 'pointer-events-none');
+                    letterModalContent.classList.remove('scale-90');
+                    letterModalContent.classList.add('scale-100');
+                } else {
+                    letterModal.classList.add('opacity-0', 'pointer-events-none');
+                    letterModalContent.classList.remove('scale-100');
+                    letterModalContent.classList.add('scale-90');
+                    envelope.classList.remove('open');
+                }
+            }, envelope.classList.contains('open') ? 400 : 0);
+        }
+
+        /* ================= 5. CANVA DE ESTRELLAS Y DESTELLOS ================= */
+        const starCanvas = document.getElementById('starCanvas');
+        const starCtx = starCanvas.getContext('2d');
+
+        let stars = [];
+
+        function resizeStarCanvas() {
+            starCanvas.width = window.innerWidth;
+            starCanvas.height = window.innerHeight;
+            initStars();
+        }
+
+        function initStars() {
+            stars = [];
+            const count = Math.floor((starCanvas.width * starCanvas.height) / 3000);
+            for (let i = 0; i < count; i++) {
+                stars.push({
+                    x: Math.random() * starCanvas.width,
+                    y: Math.random() * starCanvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    alpha: Math.random(),
+                    speed: Math.random() * 0.02 + 0.005,
+                    color: Math.random() > 0.5 ? '#e9d5ff' : '#f472b6'
+                });
+            }
+        }
+
+        function animateStars() {
+            starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+            stars.forEach(star => {
+                star.alpha += star.speed;
+                if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+
+                starCtx.beginPath();
+                starCtx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                starCtx.fillStyle = star.color;
+                starCtx.globalAlpha = Math.abs(star.alpha);
+                starCtx.fill();
+            });
+            requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', resizeStarCanvas);
+        resizeStarCanvas();
+        animateStars();
+
+        /* ================= 6. CANVA DE PARTÍCULAS / LLUVIA DE AMOR ================= */
+        const particleCanvas = document.getElementById('particleCanvas');
+        const particleCtx = particleCanvas.getContext('2d');
+
+        let particles = [];
+        const loveBtn = document.getElementById('loveBtn');
+        const loveCounter = document.getElementById('loveCounter');
+        let count = 0;
+
+        function resizeParticleCanvas() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeParticleCanvas);
+        resizeParticleCanvas();
+
+        const particleSymbols = ['💜', '💖', '🌸', '✨', '🪻', '💕'];
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.symbol = particleSymbols[Math.floor(Math.random() * particleSymbols.length)];
+                this.size = Math.random() * 16 + 12;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = -Math.random() * 4 - 2;
+                this.alpha = 1;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.vRot = (Math.random() - 0.5) * 0.1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vy += 0.05; // gravedad leve
+                this.alpha -= 0.015;
+                this.rotation += this.vRot;
+            }
+
+            draw() {
+                particleCtx.save();
+                particleCtx.globalAlpha = Math.max(0, this.alpha);
+                particleCtx.translate(this.x, this.y);
+                particleCtx.rotate(this.rotation);
+                particleCtx.font = `${this.size}px sans-serif`;
+                particleCtx.textAlign = 'center';
+                particleCtx.textBaseline = 'middle';
+                particleCtx.fillText(this.symbol, 0, 0);
+                particleCtx.restore();
+            }
+        }
+
+        function createBurst(e) {
+            count++;
+            loveCounter.innerText = count;
+
+            // Animación sencilla del número
+            loveCounter.classList.add('scale-125');
+            setTimeout(() => loveCounter.classList.remove('scale-125'), 150);
+
+            const rect = loveBtn.getBoundingClientRect();
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 20; i++) {
+                particles.push(new Particle(startX, startY));
+            }
+        }
+
+        function animateParticles() {
+            particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) {
+                    particles.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        loveBtn.addEventListener('click', createBurst);
+        animateParticles();
+
+        /* ================= 7. AUDIO SINTÉTICO AMBIENTAL ================= */
+        // Crea un ambiente de notas suaves relajantes usando Web Audio API sin necesidad de archivos externos MP3
+        let audioCtx = null;
+        let isPlaying = false;
+        let intervalId = null;
+
+        const notes = [261.63, 329.63, 392.00, 523.25, 440.00]; // C4, E4, G4, C5, A4
+
+        function playSoftNote() {
+            if (!audioCtx || !isPlaying) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                const freq = notes[Math.floor(Math.random() * notes.length)];
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                osc.type = 'sine';
+
+                gain.gain.setValueAtTime(0.01, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 1.5);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 4.0);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 4.1);
+            } catch (e) {}
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            isPlaying = true;
+            document.getElementById('musicIcon').className = "fas fa-volume-up text-sm";
+            
+            if (!intervalId) {
+                playSoftNote();
+                intervalId = setInterval(playSoftNote, 2500);
+            }
+        }
+
+        document.getElementById('musicToggle').addEventListener('click', () => {
+            if (!audioCtx) {
+                initAudio();
+                return;
+            }
+
+            if (isPlaying) {
+                isPlaying = false;
+                document.getElementById('musicIcon').className = "fas fa-volume-mute text-sm";
+                if (intervalId) {
+                    clearInterval(intervalId);
+                    intervalId = null;
+                }
+            } else {
+                initAudio();
+            }
+        });
+    </script>
+</body>
+</html>
